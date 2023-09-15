@@ -1,19 +1,13 @@
 import img from "../assets/art1.jpeg"
 
-export default function Card() {
-    const artwork = {
-        title: "Mystic Sunset",
-        artist: "John Doe",
-        year: 2022,
-    };
-
+export default function Card(prop) {
     return (
         <div className="card">
-            <img src={img} alt={artwork.title} width="200px" />
+            <img src={img} alt={prop.item.title} width="200px" />
             <div className="card--stats">
-                <h2>{artwork.title}</h2>
-                <p>Artist: {artwork.artist}</p>
-                <p>Year: {artwork.year}</p>
+                <h2>{prop.item.title}</h2>
+                <p>Artist: {prop.item.artist}</p>
+                <p>Year: {prop.item.year}</p>
             </div>
         </div>
     )

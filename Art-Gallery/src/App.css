@@ -41,6 +41,8 @@ h1 {
   border-radius: 10px;
   box-shadow: 0px 4px 8px #313445(0, 0, 0, 0.2);
   margin: 20px;
+  margin-top: 40px;
+  margin-left: 40px;
   padding: 20px;
   display: flex;
   flex-direction: column;
