@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar"
 import Card from "./components/Card"
+import Upload from "./components/Upload"
 import { initializeApp } from "firebase/app";
 import { 
   getFirestore, collection, onSnapshot
@@ -32,13 +33,15 @@ export default function App() {
         ...doc.data(),
         id: doc.id,
       }));
-      setArts((prev) => [...prev, ...newArts]);
+      // setArts((prev) => [...prev, ...newArts]);
+      setArts(newArts);
     });
 
     // Return a cleanup function to unsubscribe when the component unmounts
     return () => unsubscribe();
   }, []);
 
+  console.log(arts)
   const cards = arts.map(item => {
     return (
         <Card
@@ -54,6 +57,7 @@ export default function App() {
       <section className="cards-list">
         {cards}
       </section>
+      <Upload />
     </div>
   )
 }
