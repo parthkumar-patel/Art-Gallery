@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar"
-// import Card from "./components/Card"
+import Card from "./components/Card"
 
 export default function App() {
   // const cards = data.map(item => {
@@ -14,7 +14,7 @@ export default function App() {
     <div>
       <Navbar />
       <section className="cards-list">
-        {/* {cards} */}
+        <Card />
       </section>
     </div>
   )
