@@ -39,8 +39,6 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  console.log("art",arts);
-
   const cards = arts.map(item => {
     return (
         <Card
