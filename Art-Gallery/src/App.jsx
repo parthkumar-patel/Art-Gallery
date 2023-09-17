@@ -7,7 +7,10 @@ import {
   getFirestore, collection, onSnapshot
 } from "firebase/firestore";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import {
+  getStorage, ref, getDownloadURL, listAll
+} from "firebase/storage"
+
 const firebaseConfig = {
   apiKey: "AIzaSyApjwpwpCwORh66wapgNgigm1iKdEjZub8",
   authDomain: "art-gallery-ab57c.firebaseapp.com",
@@ -20,12 +23,13 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-
 const db = getFirestore();
 const colRef = collection(db, 'arts');
 
+
 export default function App() {
   const [arts, setArts] = useState([])
+  const [imageList, setImageList] = useState([])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
@@ -33,15 +37,12 @@ export default function App() {
         ...doc.data(),
         id: doc.id,
       }));
-      // setArts((prev) => [...prev, ...newArts]);
       setArts(newArts);
     });
 
-    // Return a cleanup function to unsubscribe when the component unmounts
     return () => unsubscribe();
   }, []);
 
-  console.log(arts)
   const cards = arts.map(item => {
     return (
         <Card
@@ -51,13 +52,31 @@ export default function App() {
     )
   })  
   
+  const storage = getStorage();
+  const imageListRef = ref(storage,'images/')
+
+  useEffect(() => {
+    listAll(imageListRef)
+        .then(response => {
+            const urlPromises = response.items.map(item => getDownloadURL(item));
+            return Promise.all(urlPromises);
+        })
+        .then(urls => {
+            setImageList(urls);
+        })
+        .catch(error => {
+            console.error('Error fetching URLs from Firebase Storage:', error);
+        });
+  }, []);
+  console.log(imageList)
+
   return (
     <div>
       <Navbar />
       <section className="cards-list">
         {cards}
       </section>
-      <Upload />
+      <Upload storage={storage} />
     </div>
   )
 }

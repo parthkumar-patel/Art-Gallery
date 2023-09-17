@@ -1,19 +1,19 @@
 import { useState } from "react"
-import { getStorage, ref, uploadBytes } from "firebase/storage"
+import { ref, uploadBytes } from "firebase/storage"
 
-export default function Upload() {
+
+export default function Upload(prop) {
     const [image, setImage] = useState(null)
-    const storage = getStorage();
 
     function upload() {
         if (image) {
-            const imageRef = ref(storage, `images/${image.name}`)
+            const imageRef = ref(prop.storage, `images/${image.name}`)
             uploadBytes(imageRef, image).then(() => {
                 console.log('Uploaded a blob or file!');
             });
         }
     }
-
+    
     return (
         <div>
             <input 
