@@ -17,7 +17,7 @@ body {
   background-color: #313651;
   padding: auto;
   display: flex;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 8px rgb(69, 49, 49); /*not working*/
 }
 
 .nav--logo {
@@ -139,6 +139,7 @@ h1 {
   margin: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-shadow: 0px 4px 8px rgb(49, 52, 69, 0.2);
 }
 
 /* Container for content */
@@ -164,4 +165,8 @@ h1 {
 /* Margin between the sections */
 .upload-container {
   margin-right: 20px;
+  box-shadow: 0px 4px 8px rgb(49, 52, 69, 0.3);
+  border: 3px dotted #222430;
+  padding: 50px;
+  margin-block: 50px;
 }

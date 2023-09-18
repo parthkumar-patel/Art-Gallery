@@ -16,6 +16,7 @@ export default function Upload(prop) {
                 console.log('Uploaded a blob or file!');
             });
         }
+        setImage(null)
     }
 
     const handleAddArt = () => {
@@ -39,7 +40,7 @@ export default function Upload(prop) {
         <div className="content--container" >
           <div className="upload-container">
                 <label htmlFor="file" className="upload-label">
-                    Choose an Image
+                    {image? image.name : "Choose an Image"}
                 </label>
                 <input
                     type="file"
