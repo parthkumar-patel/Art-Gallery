@@ -67,7 +67,7 @@ export default function App() {
         .catch(error => {
             console.error('Error fetching URLs from Firebase Storage:', error);
         });
-  }, []);
+  }, [])
   console.log(imageList)
 
   return (
