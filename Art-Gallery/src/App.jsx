@@ -75,6 +75,11 @@ export default function App() {
       <Navbar />
       <section className="cards-list">
         {cards}
+        {cards}
+
+        {cards}
+        {cards}
+
       </section>
       <Upload storage={storage} />
     </div>
