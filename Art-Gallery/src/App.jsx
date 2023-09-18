@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "./components/Navbar"
 import Card from "./components/Card"
 import Upload from "./components/Upload"
@@ -53,7 +53,7 @@ export default function App() {
   })  
   
   const storage = getStorage();
-  const imageListRef = ref(storage,'images/')
+  const imageListRef = useMemo(() => ref(storage, 'images/'), [storage]);
 
   useEffect(() => {
     listAll(imageListRef)
@@ -67,7 +67,7 @@ export default function App() {
         .catch(error => {
             console.error('Error fetching URLs from Firebase Storage:', error);
         });
-  }, [])
+  }, [imageListRef])
   console.log(imageList)
 
   return (
