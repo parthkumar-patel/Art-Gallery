@@ -7,7 +7,7 @@ export default function Upload(prop) {
     const [title, setTitle] = useState("");
     const [artist, setArtist] = useState("");
     const [year, setYear] = useState("");
-
+    const [previewImage, setPreviewImage] = useState(null); 
 
     const upload = () => {
         if (image) {
@@ -17,7 +17,20 @@ export default function Upload(prop) {
             });
         }
         setImage(null)
+        setPreviewImage(null)
     }
+
+    const handleImageChange = (event) => {
+        const selectedImage = event.target.files[0];
+        setImage(selectedImage);
+    
+        // Create a file preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setPreviewImage(e.target.result);
+        };
+        reader.readAsDataURL(selectedImage);
+    };
 
     const handleAddArt = () => {
         if (title && artist && year) {
@@ -37,16 +50,20 @@ export default function Upload(prop) {
       };
     
     return (
-        <div className="content--container" >
-          <div className="upload-container">
+        <div className="content--container">
+          <div className="upload-container" style={{ padding: previewImage ? "20px" : "40px"}}>
                 <label htmlFor="file" className="upload-label">
-                    {image? image.name : "Choose an Image"}
+                {previewImage ? (
+                    <img src={previewImage} alt="Preview" style={{ maxWidth: "100px" }} />
+                    ) : (
+                    "Choose an Image" )
+                }
                 </label>
                 <input
                     type="file"
                     id="file"
                     className="upload-input"
-                    onChange={(event) => setImage(event.target.files[0])}
+                    onChange={handleImageChange}
                 />
                 <button className="upload-button" onClick={upload}>
                     Upload Art
