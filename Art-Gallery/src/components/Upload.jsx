@@ -1,26 +1,53 @@
 import { useState } from "react"
-import { ref, uploadBytes } from "firebase/storage"
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { addDoc } from "firebase/firestore";
 
 
 export default function Upload(prop) {
     const [image, setImage] = useState(null)
-    const [title, setTitle] = useState("");
-    const [artist, setArtist] = useState("");
-    const [year, setYear] = useState("");
-    const [previewImage, setPreviewImage] = useState(null); 
+    const [previewImage, setPreviewImage] = useState(null)
+    const [formData, setFormData] = useState({
+        title: "",
+        artist: "",
+        year: "",
+        imageURL: ""
+    })
 
-    const upload = () => {
+    function handleAddArt() {
         if (image) {
             const imageRef = ref(prop.storage, `images/${image.name}`)
-            uploadBytes(imageRef, image).then(() => {
-                console.log('Uploaded a blob or file!');
-            });
+            const uploadTask = uploadBytesResumable(imageRef, image);
+
+            uploadTask.on('state_changed', (snapshot) => {
+                // progrss function ....
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+              }, 
+              (error) => { 
+                console.log(error);
+              }, 
+              () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                    // setFormData(prev => ({
+                    //     ...prev,
+                    //     imageURL: downloadURL
+                    // }))
+
+                    addDoc(prop.colRef, {
+                        title: formData.title,
+                        artist: formData.artist,
+                        year: formData.year,
+                        imageURL: downloadURL
+                    })
+                });
+              });
         }
         setImage(null)
         setPreviewImage(null)
     }
 
-    const handleImageChange = (event) => {
+    function handleImageChange(event) {
         const selectedImage = event.target.files[0];
         setImage(selectedImage);
     
@@ -30,24 +57,17 @@ export default function Upload(prop) {
           setPreviewImage(e.target.result);
         };
         reader.readAsDataURL(selectedImage);
-    };
 
-    const handleAddArt = () => {
-        if (title && artist && year) {
-          const art = {
-            title,
-            artist,
-            year,
-          };
-          console.log(art)
-    
-          setTitle("");
-          setArtist("");
-          setYear("");
-        } else {
-          alert("Please fill in all fields.");
-        }
-      };
+        handleChange(event)
+    }
+
+    function handleChange(event) {
+        const {name, value} = event.target
+        setFormData(prev => ({
+            ...prev, 
+            [name]: value
+        }))
+    }
     
     return (
         <div className="content--container">
@@ -56,7 +76,7 @@ export default function Upload(prop) {
                 {previewImage ? (
                     <img src={previewImage} alt="Preview" style={{ maxWidth: "100px" }} />
                     ) : (
-                    "Choose an Image" )
+                    "Upload an Image" )
                 }
                 </label>
                 <input
@@ -64,31 +84,35 @@ export default function Upload(prop) {
                     id="file"
                     className="upload-input"
                     onChange={handleImageChange}
+                    value={formData.imageURL}
                 />
-                <button className="upload-button" onClick={upload}>
+                {/* <button className="upload-button" onClick={upload}>
                     Upload Art
-                </button>
+                </button> */}
             </div>
             <div className="input-container">
                 <input
                     type="text"
                     placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    value={formData.title}
+                    name="title"
+                    onChange={handleChange}
                     className="input-field"
                 />
                 <input
                     type="text"
                     placeholder="Artist's Name"
-                    value={artist}
-                    onChange={(e) => setArtist(e.target.value)}
+                    value={formData.artist}
+                    name="artist"
+                    onChange={handleChange}
                     className="input-field"
                 />
                 <input
                     type="text"
                     placeholder="Year"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
+                    value={formData.year}
+                    name="year"
+                    onChange={handleChange}
                     className="input-field"
                 />
                 <button onClick={handleAddArt} className="add-button">

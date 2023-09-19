@@ -62,12 +62,21 @@ export default function App() {
             return Promise.all(urlPromises);
         })
         .then(urls => {
-            setImageList(urls);
+          console.log("Urls with createdAt:", urls);
+          const sortedImageList = urls.sort((a, b) => {
+            const aCreatedAt = new Date(a.createdAt);
+            const bCreatedAt = new Date(b.createdAt);
+            return bCreatedAt - aCreatedAt;
+          });
+          console.log("Sorted image list:", sortedImageList);
+          setImageList(sortedImageList);
         })
         .catch(error => {
             console.error('Error fetching URLs from Firebase Storage:', error);
         });
   }, [imageListRef])
+
+
   console.log(imageList)
 
   return (
@@ -81,7 +90,11 @@ export default function App() {
         {cards}
 
       </section>
-      <Upload storage={storage} />
+      <Upload 
+        storage={storage} 
+        db={db}
+        colRef={colRef}
+      />
     </div>
   )
 }
