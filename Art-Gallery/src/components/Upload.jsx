@@ -12,16 +12,18 @@ export default function Upload(prop) {
         year: "",
         imageURL: ""
     })
+    const [uploadProgress, setUploadProgress] = useState(0);
     const storage = getStorage();
 
     function handleAddArt() {
         if (image) {
             const imageRef = ref(storage, `images/${image.name}`)
             const uploadTask = uploadBytesResumable(imageRef, image);
-
+            
             uploadTask.on('state_changed', (snapshot) => {
                 // progrss function ....
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setUploadProgress(progress);
                 console.log('Upload is ' + progress + '% done');
               }, 
               (error) => { 
@@ -40,6 +42,7 @@ export default function Upload(prop) {
                 });
               });
         }
+        setUploadProgress(0); 
         setImage(null)
         setPreviewImage(null)
         setFormData({
@@ -87,8 +90,10 @@ export default function Upload(prop) {
                     id="file"
                     className="upload-input"
                     onChange={handleImageChange}
-                    value={formData.imageURL}
                 />
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                    <progress className="upload-progress" value={uploadProgress} max="100"></progress>
+                )}
             </div>
             <div className="input-container">
                 <input
