@@ -4,7 +4,7 @@ import Card from "./components/Card"
 import Upload from "./components/Upload"
 import { initializeApp } from "firebase/app";
 import { 
-    getFirestore, collection, onSnapshot
+    getFirestore, collection, onSnapshot, query, orderBy
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -20,12 +20,13 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const db = getFirestore();
 const colRef = collection(db, 'arts');
+const q = query(colRef, orderBy("createdAt", "desc"))
 
 export default function App() {
     const [arts, setArts] = useState([])
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(colRef, (snapshot) => {
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             const newArts = snapshot.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,

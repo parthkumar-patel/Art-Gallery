@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage"
-import { addDoc } from "firebase/firestore";
+import { addDoc, serverTimestamp } from "firebase/firestore";
 
 
 export default function Upload(prop) {
@@ -32,23 +32,24 @@ export default function Upload(prop) {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         
                         addDoc(prop.colRef, {
-                        title: formData.title,
-                        artist: formData.artist,
-                        year: formData.year,
-                        imageURL: downloadURL,
+                            title: formData.title,
+                            artist: formData.artist,
+                            year: formData.year,
+                            imageURL: downloadURL,
+                            createdAt: serverTimestamp() 
                         });
         
                         setUploadProgress(0);
                         setImage(null);
                         setPreviewImage(null);
                         setFormData({
-                        title: "",
-                        artist: "",
-                        year: "",
-                        imageURL: "",
+                            title: "",
+                            artist: "",
+                            year: "",
+                            imageURL: ""
                         });
                     });
-                }, 1020); 
+                }, 1024); 
             });
         }
     }
