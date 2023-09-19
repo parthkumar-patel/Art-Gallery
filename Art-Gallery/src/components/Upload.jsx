@@ -2,7 +2,6 @@ import { useState } from "react"
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage"
 import { addDoc } from "firebase/firestore";
 
-const storage = getStorage();
 
 export default function Upload(prop) {
     const [image, setImage] = useState(null)
@@ -13,6 +12,7 @@ export default function Upload(prop) {
         year: "",
         imageURL: ""
     })
+    const storage = getStorage();
 
     function handleAddArt() {
         if (image) {
