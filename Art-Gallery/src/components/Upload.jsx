@@ -1,7 +1,8 @@
 import { useState } from "react"
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage"
 import { addDoc } from "firebase/firestore";
 
+const storage = getStorage();
 
 export default function Upload(prop) {
     const [image, setImage] = useState(null)
@@ -15,7 +16,7 @@ export default function Upload(prop) {
 
     function handleAddArt() {
         if (image) {
-            const imageRef = ref(prop.storage, `images/${image.name}`)
+            const imageRef = ref(storage, `images/${image.name}`)
             const uploadTask = uploadBytesResumable(imageRef, image);
 
             uploadTask.on('state_changed', (snapshot) => {
@@ -29,10 +30,6 @@ export default function Upload(prop) {
               () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     console.log('File available at', downloadURL);
-                    // setFormData(prev => ({
-                    //     ...prev,
-                    //     imageURL: downloadURL
-                    // }))
 
                     addDoc(prop.colRef, {
                         title: formData.title,
@@ -45,6 +42,12 @@ export default function Upload(prop) {
         }
         setImage(null)
         setPreviewImage(null)
+        setFormData({
+            title: "",
+            artist: "",
+            year: "",
+            imageURL: ""
+        })
     }
 
     function handleImageChange(event) {
@@ -86,9 +89,6 @@ export default function Upload(prop) {
                     onChange={handleImageChange}
                     value={formData.imageURL}
                 />
-                {/* <button className="upload-button" onClick={upload}>
-                    Upload Art
-                </button> */}
             </div>
             <div className="input-container">
                 <input

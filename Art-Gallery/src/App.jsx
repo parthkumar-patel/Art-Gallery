@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar"
 import Card from "./components/Card"
 import Upload from "./components/Upload"
@@ -6,10 +6,6 @@ import { initializeApp } from "firebase/app";
 import { 
   getFirestore, collection, onSnapshot
 } from "firebase/firestore";
-
-import {
-  getStorage, ref, getDownloadURL, listAll
-} from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: "AIzaSyApjwpwpCwORh66wapgNgigm1iKdEjZub8",
@@ -22,14 +18,11 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);
-
 const db = getFirestore();
 const colRef = collection(db, 'arts');
 
-
 export default function App() {
   const [arts, setArts] = useState([])
-  const [imageList, setImageList] = useState([])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
@@ -52,49 +45,13 @@ export default function App() {
     )
   })  
   
-  const storage = getStorage();
-  const imageListRef = useMemo(() => ref(storage, 'images/'), [storage]);
-
-  useEffect(() => {
-    listAll(imageListRef)
-        .then(response => {
-            const urlPromises = response.items.map(item => getDownloadURL(item));
-            return Promise.all(urlPromises);
-        })
-        .then(urls => {
-          console.log("Urls with createdAt:", urls);
-          const sortedImageList = urls.sort((a, b) => {
-            const aCreatedAt = new Date(a.createdAt);
-            const bCreatedAt = new Date(b.createdAt);
-            return bCreatedAt - aCreatedAt;
-          });
-          console.log("Sorted image list:", sortedImageList);
-          setImageList(sortedImageList);
-        })
-        .catch(error => {
-            console.error('Error fetching URLs from Firebase Storage:', error);
-        });
-  }, [imageListRef])
-
-
-  console.log(imageList)
-
   return (
     <div>
       <Navbar />
       <section className="cards-list">
         {cards}
-        {cards}
-
-        {cards}
-        {cards}
-
       </section>
-      <Upload 
-        storage={storage} 
-        db={db}
-        colRef={colRef}
-      />
+      <Upload colRef={colRef} />
     </div>
   )
 }
