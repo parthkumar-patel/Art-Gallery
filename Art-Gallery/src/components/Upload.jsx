@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage"
-import { addDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc } from "firebase/firestore";
 
 
 export default function Upload(prop) {
@@ -30,13 +30,14 @@ export default function Upload(prop) {
             () => {
                 setTimeout(() => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        
+                        const currentDate = new Date();
+                        const formattedTimestamp = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
                         addDoc(prop.colRef, {
                             title: formData.title,
                             artist: formData.artist,
                             year: formData.year,
                             imageURL: downloadURL,
-                            createdAt: serverTimestamp() 
+                            createdAt: formattedTimestamp 
                         });
         
                         setUploadProgress(0);
@@ -49,7 +50,7 @@ export default function Upload(prop) {
                             imageURL: ""
                         });
                     });
-                }, 1024); 
+                }, 1000); 
             });
         }
     }
@@ -92,7 +93,7 @@ export default function Upload(prop) {
                     className="upload-input"
                     onChange={handleImageChange}
                 />
-                {uploadProgress > 0 && (
+                {uploadProgress > 0 && uploadProgress <= 100 && (
                     <progress className="upload-progress" value={uploadProgress} max="100"></progress>
                 )}
             </div>
