@@ -17,40 +17,40 @@ export default function Upload(prop) {
 
     function handleAddArt() {
         if (image) {
-            const imageRef = ref(storage, `images/${image.name}`)
+            const imageRef = ref(storage, `images/${image.name}`);
             const uploadTask = uploadBytesResumable(imageRef, image);
-            
-            uploadTask.on('state_changed', (snapshot) => {
-                // progrss function ....
+        
+            uploadTask.on("state_changed", (snapshot) => {
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 setUploadProgress(progress);
-                console.log('Upload is ' + progress + '% done');
-              }, 
-              (error) => { 
+            },
+            (error) => {
                 console.log(error);
-              }, 
-              () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log('File available at', downloadURL);
-
-                    addDoc(prop.colRef, {
+            },
+            () => {
+                setTimeout(() => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        
+                        addDoc(prop.colRef, {
                         title: formData.title,
                         artist: formData.artist,
                         year: formData.year,
-                        imageURL: downloadURL
-                    })
-                });
-              });
+                        imageURL: downloadURL,
+                        });
+        
+                        setUploadProgress(0);
+                        setImage(null);
+                        setPreviewImage(null);
+                        setFormData({
+                        title: "",
+                        artist: "",
+                        year: "",
+                        imageURL: "",
+                        });
+                    });
+                }, 1020); 
+            });
         }
-        setUploadProgress(0); 
-        setImage(null)
-        setPreviewImage(null)
-        setFormData({
-            title: "",
-            artist: "",
-            year: "",
-            imageURL: ""
-        })
     }
 
     function handleImageChange(event) {
@@ -91,7 +91,7 @@ export default function Upload(prop) {
                     className="upload-input"
                     onChange={handleImageChange}
                 />
-                {uploadProgress > 0 && uploadProgress < 100 && (
+                {uploadProgress > 0 && (
                     <progress className="upload-progress" value={uploadProgress} max="100"></progress>
                 )}
             </div>
