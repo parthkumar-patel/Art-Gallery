@@ -31,8 +31,6 @@ To run Art Wave on your local machine, follow these steps:
 
 ## Features
 
-- **User Authentication**: Users can create accounts, log in, and securely manage their uploaded artworks.
-
 - **Artwork Upload**: Users can easily upload their artwork, including images, titles, artist names, and publication years.
 
 - **Community Interaction**: Art Wave fosters a sense of community by allowing users to view, appreciate, and engage with each other's artworks.
@@ -51,9 +49,6 @@ To run Art Wave on your local machine, follow these steps:
 
 - **Viewing Artwork**: Explore the community's artworks, view details, and appreciate the creative talents of others.
 
-## Contributor
-- Parth Patel
-
- 
-Make sure to replace `"https://github.com/your-username/Art-Wave.git"` with the actual URL of your GitHub repository and update the Firebase setup instructions with the relevant details. Customize the README to include any specific usage instructions or features unique to your project.
+## Author
+This project was created by Parthkumar Patel.
 
